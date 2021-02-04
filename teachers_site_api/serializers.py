@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend_test_api import models
+from teachers_site_api import models
 
 
 class HelloSerializer(serializers.Serializer):
