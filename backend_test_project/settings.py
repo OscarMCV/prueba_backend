@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'backend_test_api'
+    'backend_test_api',
+    'users',
+    'students_site_api',
 ]
 
 MIDDLEWARE = [
@@ -122,4 +124,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'backend_test_api.UserProfile'
+AUTH_USER_MODEL = 'users.UserProfile'
