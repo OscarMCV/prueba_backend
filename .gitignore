@@ -132,7 +132,10 @@ dmypy.json
 
 ### Vagrant Patch ###
 *.box
-
+#others
+.vscode/
+Vagrantfile
+setup.cfg
 # End of https://www.gitignore.io/api/python,vagrant
 eb-package.zip
 static/
