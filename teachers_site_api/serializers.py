@@ -14,10 +14,18 @@ class CreateClassSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CreateCourserSerializer(serializers.ModelSerializer):
+class CreateCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CreateCourse
         fields = '__all__'
+
+    def get_lessons(self, course):
+        try:
+            course_lessons = models.CreateLesson.objects.filter(lesson__id=course.id)
+            return CreateLessonSerializer(course_lessons)
+        except models.CreateLesson.DoesNotExist:
+            return None
+
 
 
 class CreateLessonSerializer(serializers.ModelSerializer):

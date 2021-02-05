@@ -18,8 +18,7 @@ class CreateCourse(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name_class = models.ForeignKey(CreateClass, on_delete=models.CASCADE)
     name = models.CharField(max_length=120, unique=True,)
-    level = models.IntegerField()
-
+    
     def __str__(self):
         """Return string representation for the Course"""
         return self.name
@@ -30,7 +29,6 @@ class CreateLesson(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     course = models.ForeignKey(CreateCourse, on_delete=models.CASCADE)
     name = models.CharField(max_length=120, unique=True,)
-    level = models.IntegerField()
 
     def __str__(self):
         """Return string representation for a Lesson"""
@@ -43,7 +41,6 @@ class CreateQuestion(models.Model):
     uploaded = models.DateTimeField(auto_now_add=True)
     lesson = models.ForeignKey(CreateLesson, on_delete=models.CASCADE)
     question = models.CharField(max_length=300, unique=True,)
-    level = models.IntegerField()
     number_correct_answers = models.IntegerField()
     number_bad_answers = models.IntegerField()
     all_correctanswers = models.CharField(max_length=300, unique=True)
