@@ -8,15 +8,9 @@ class HelloSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=10)
 
 
-class CreateClassSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.CreateClass
-        fields = '__all__'
-
-
 class CreateCourseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.CreateCourse
+        model = models.Course
         fields = '__all__'
 
     def get_lessons(self, course):
@@ -27,14 +21,13 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             return None
 
 
-
 class CreateLessonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.CreateLesson
-        fields = '__all__'
+        model = models.Lesson
+        fields = ['name', 'questions']
 
 
 class CreateQuestionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.CreateQuestion
+        model = models.Question
         fields = '__all__'

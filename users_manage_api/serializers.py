@@ -10,11 +10,18 @@ from rest_framework.validators import UniqueValidator
 from users_manage_api import models
 
 
+class CreateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.UserProfile
+        fields = ['email', 'password', 'name', ]
+        
+
+
 #Serializer class for the model
 class UserProfileModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.UserProfile
-        fields = ['email', 'password', 'name']
+        fields = ['email', 'password', ]
 
 
 #Serializer class for the login
@@ -23,7 +30,8 @@ class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(min_length=8, max_length=64)
 
-    # Validating data
+    # Validating data, tthe method validate() is reserved to make validations with the fields given
+    #It has tu have this structure and return "data"
     def validate(self, data):
         #authenticate get the credentials, if they are valid return the user object
         user = authenticate(username=data['email'], password=data['password'])

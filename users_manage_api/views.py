@@ -4,21 +4,39 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 # Serializers
-from users_manage_api.serializers import UserLoginSerializer, UserProfileModelSerializer
+from users_manage_api.serializers import UserLoginSerializer, UserProfileModelSerializer, CreateUserSerializer
 
 # Models
 from users_manage_api.models import UserProfile
 
 
+class CreateUser(APIView):
+    queryset = UserProfile.objects.all()
+    #Retrieve all the users
+    serializer_class = CreateUserSerializer
+
+    def post(self, request):
+        serializer = CreateUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response("Invalid Input")
+        data = {
+            'user': serializer.data,
+            'Welcome': serializer.name
+        }
+        return Response(data, status=status.HTTP_201_CREATED)
+
+
 class UserAPIView(APIView):
     #Only active users, inspect in model for more information about the fields
-    queryset = UserProfile.objects.filter(is_active=True)
+    queryset = UserProfile.objects.filter(is_active=True, is_student=True)
     ##############Why is this the properly reference?
     serializer_class = UserProfileModelSerializer
 
     def get(self, request):
-        #Only shows active users
-        user = UserProfile.objects.filter(is_active=True)
+        #Only shows active users and students
+        user = UserProfile.objects.filter(is_active=True, is_student=True)
         serializer = UserProfileModelSerializer(user, many=True)
         return Response(serializer.data)
 

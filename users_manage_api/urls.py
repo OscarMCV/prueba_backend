@@ -9,6 +9,7 @@ from users_manage_api import views as user_views
 """In order to handle urls management better, the "views" name has been changed"""
 urlpatterns = [
     path('login/', user_views.UserAPIView.as_view()),
+    path('logon/', user_views.CreateUser.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
