@@ -14,6 +14,7 @@ class CreateUser(APIView):
     queryset = UserProfile.objects.all()
     #Retrieve all the users
     serializer_class = CreateUserSerializer
+    #Default serializer for the view
 
     def post(self, request):
         serializer = CreateUserSerializer(data=request.data)
@@ -23,7 +24,6 @@ class CreateUser(APIView):
             return Response("Invalid Input")
         data = {
             'user': serializer.data,
-            'Welcome': serializer.name
         }
         return Response(data, status=status.HTTP_201_CREATED)
 

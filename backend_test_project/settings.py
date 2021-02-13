@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    
     'users_manage_api',
     'students_site_api',
     'teachers_site_api',

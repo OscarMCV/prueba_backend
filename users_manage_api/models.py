@@ -6,6 +6,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.conf import settings
 #This last import, allows use the setting AUTH_USER_MODEL = 'users_manage_api.UserProfile'
 
+
 class UserProfileManager(BaseUserManager):
     """Manager for user profile"""
 
@@ -37,6 +38,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     """Database model for users in the system"""
 
     email = models.EmailField(max_length=255, unique=True)
+    #Cannot be two similar emails
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     #if a student stop paying the school, the admin can turn off this attribute
@@ -61,18 +63,3 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """return string representation of user"""
         return self.email
-
-
-class ProfileFeedItem(models.Model):
-    """Profile status update"""
-    user_profile = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        #This retireves te value fo the auth user setting as the reference
-        on_delete=models.CASCADE
-    )
-    status_text = models.CharField(max_length=255)
-    created_on = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        """Return the model as a string"""
-        return self.status_text

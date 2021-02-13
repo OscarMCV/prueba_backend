@@ -4,23 +4,30 @@ from django.contrib.auth import password_validation, authenticate
 # Django REST Framework
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from rest_framework.validators import UniqueValidator
 
 # Models
-from users_manage_api import models
+from users_manage_api.models import UserProfile
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.UserProfile
+        model = UserProfile
         fields = ['email', 'password', 'name', ]
-        
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = UserProfile(**validated_data)
+        #INSTANCE A USER AAAAAAAAA!!!! that's why the ".set_password" didn't work
+        user.set_password(password)
+        #Now, user has the method "set_password, duh"
+        user.save()
+        return user
 
 
 #Serializer class for the model
 class UserProfileModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.UserProfile
+        model = UserProfile
         fields = ['email', 'password', ]
 
 
