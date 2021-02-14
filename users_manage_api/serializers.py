@@ -16,6 +16,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password')
+        #Delete the password of the validated data, because we need to set password hashed 
         user = UserProfile(**validated_data)
         #INSTANCE A USER AAAAAAAAA!!!! that's why the ".set_password" didn't work
         user.set_password(password)
@@ -42,6 +43,7 @@ class UserLoginSerializer(serializers.Serializer):
     def validate(self, data):
         #authenticate get the credentials, if they are valid return the user object
         user = authenticate(username=data['email'], password=data['password'])
+        #https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
         if not user:
             raise serializers.ValidationError('The credentials are invalid')
 
@@ -52,6 +54,7 @@ class UserLoginSerializer(serializers.Serializer):
     def create(self, data):
         """Generate o recover a token"""
         token, created = Token.objects.get_or_create(user=self.context['user'])
+        #Generate or retrieve a token for the user
         return self.context['user'], token.key
 
 

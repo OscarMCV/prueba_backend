@@ -45,6 +45,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     #Only the API manager is staff (no teachers, no students, just OscarMCV)
     is_teacher = models.BooleanField(default=False)
+    #To make more logic, the model will keep two arguments rather could use only one
     is_student = models.BooleanField(default=True)
     #New feature to manage the users permissions
     objects = UserProfileManager()

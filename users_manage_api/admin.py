@@ -1,9 +1,14 @@
 from django.contrib import admin
 from users_manage_api.models import UserProfile
 # Register your models here.
+
+
 @admin.register(UserProfile)
 class UserAdmin(admin.ModelAdmin):
-    """User admin."""
+    """
+    This was made in order to manage the users permissions
+    easily. Is the user admin.
+    """
     list_display = ('pk', 'email',)
     list_display_links = ('pk', 'email',)
 

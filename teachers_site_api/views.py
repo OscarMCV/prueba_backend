@@ -2,9 +2,11 @@ from django.db.models.query import QuerySet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 from teachers_site_api import serializers
 from teachers_site_api import models
+from users_manage_api.permissions import IsTeacher
 
 """
 this is how the request works
@@ -16,6 +18,7 @@ class CourseView(APIView):
     """
     Retrieve all the information of every course
     """
+    permission_classes = [IsAuthenticated & IsTeacher]
     serializer_class = serializers.CreateCourseSerializer
 
     def get(self, request, format=None):
