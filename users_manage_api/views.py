@@ -52,5 +52,6 @@ class UserAPIView(APIView):
             'user': UserProfileModelSerializer(user).data,
             'access_token': token,
             'api_message': 'login completed successfully'
+            'This is '
         }
         return Response(data, status=status.HTTP_201_CREATED)

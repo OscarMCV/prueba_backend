@@ -39,6 +39,7 @@ class LessonView(APIView):
     """
      Retrieve all the information of ev
      """
+    permission_classes = [IsAuthenticated & IsTeacher]
     serializer_class = serializers.CreateLessonSerializer
     queryset = models.Lesson.objects.all()
 
@@ -57,6 +58,7 @@ class LessonView(APIView):
 
 
 class QuestionView(APIView):
+    permission_classes = [IsAuthenticated & IsTeacher]
     serializer_class = serializers.CreateQuestionSerializer
     queryset = models.Question.objects.all()
 
@@ -76,6 +78,7 @@ class QuestionView(APIView):
 
 #The APIView for the details
 class CourseDetail(APIView):
+    permission_classes = [IsAuthenticated & IsTeacher]
     def get(self, request, course_id):
         try:
             course = models.Course.objects.get(pk=course_id)
@@ -103,6 +106,7 @@ class CourseDetail(APIView):
 
 
 class LessonDetail(APIView):
+    permission_classes = [IsAuthenticated & IsTeacher]
     serializer_class = serializers.CreateLessonSerializer
     queryset = models.Lesson.objects.all()
 
@@ -141,6 +145,7 @@ class QuestionDetail(APIView):
     Gives details of a question, name, answers and kind of answers.
     also in this view is where the answers are created.
     """
+    permission_classes = [IsAuthenticated & IsTeacher]
     serializer_class = serializers.CreateAnswerSerializer
 
     def get(self, request, question_id, course_id, lesson_id):
