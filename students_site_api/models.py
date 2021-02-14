@@ -13,9 +13,9 @@ class LessonAchivment(models.Model):
     grade = models.FloatField()
 
 
-
 class CourseAchivment(models.Model):
     id = models.UUIDField(primary_key=True, unique=True)
+    course =  models.ForeignKey(Course, on_delete=models.=ACCSCS)
     student = models.ForeignKey(StudenProgress, related_name='Courses', on_delete=models.CASCADE)
     grade = models.FloatField()
 
