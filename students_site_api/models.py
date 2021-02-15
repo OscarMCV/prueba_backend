@@ -15,7 +15,7 @@ class StudentProgress(models.Model):
 
 class Related_Course(models.Model):
     id = models.CharField(primary_key=True, unique=True, max_length=100)
-    #It is a CahrField because the plan is will be equal to an existing lesson ID
+    #It is a CharField because the plan is will be equal to an existing lesson ID
     course_name = models.CharField(unique=True, max_length=100)
     student = models.ManyToManyField(StudentProgress, through='CourseAchivments')
 
@@ -25,7 +25,7 @@ class Related_Course(models.Model):
 
 class Related_Lesson(models.Model):
     id = models.CharField(primary_key=True, unique=True, max_length=100)
-    #It is a CahrField because the plan is will be equal to an existing lesson ID
+    #It is a CharField because the plan is will be equal to an existing lesson ID
     lesson_name = models.CharField(unique=True, max_length=100)
     student = models.ManyToManyField(StudentProgress, through='LessonAchivments')
 
@@ -34,12 +34,14 @@ class Related_Lesson(models.Model):
 
 
 class CourseAchivments(models.Model):
+    #Will handle a register when a course is finished
     student = models.ForeignKey(StudentProgress, related_name='course_achivments', on_delete=models.CASCADE)
     curse = models.ForeignKey(Related_Course, on_delete=models.CASCADE)
     achivment_date = models.DateTimeField(auto_now=True)
 
 
 class LessonAchivments(models.Model):
+    #will handle a register when a Lesson is finished
     student = models.ForeignKey(StudentProgress, related_name='lesson_achivments', on_delete=models.CASCADE)
     lessons = models.ForeignKey(Related_Lesson, on_delete=models.CASCADE)
     grade = models.FloatField()

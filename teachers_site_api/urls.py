@@ -1,6 +1,7 @@
+#Django Core Imports
 from django.urls import path
+#Internal apps imports
 from teachers_site_api import views
-#from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     path('courses/<str:course_id>/', views.CourseDetail.as_view()),
@@ -22,9 +23,7 @@ urlpatterns = [
 The first paths, are the logic paths to manage the data
 in an very detailed way.
 
-The second paths, are the non logic paths, they manage data in a chaotic mode.
-This paths retrieve a lot of information, but has the advantage of be very fast
-to create new objects.
-AVOID MAKE GET REQUEST IN THE SECOND SETS OF PATHS
+The second paths, are the non detailed objects, they
+could manage some nested relations but always undetailed
 """
-#urlpatterns = format_suffix_patterns(urlpatterns)
+

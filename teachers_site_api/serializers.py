@@ -1,6 +1,9 @@
+#Rest framework imports
 from rest_framework import serializers
-
+#Internal apps imports
 from teachers_site_api import models
+
+#https://www.django-rest-framework.org/api-guide/serializers/#baseserializer
 
 
 class CreateCourseSerializer(serializers.ModelSerializer):
@@ -16,7 +19,10 @@ class CreateLessonSerializer(serializers.ModelSerializer):
 
 
 class CreateQuestionSerializer(serializers.ModelSerializer):
-
+    """
+    Verify the cohesion between the type of questinons
+    and the amount of answers
+    """
     class Meta:
         model = models.Question
         fields = [
@@ -80,6 +86,9 @@ class CreateAnswerSerializer(serializers.ModelSerializer):
                 uno=lol1,
                 dos=lol2
             )
+            #The question could be send differente from the question_id
+            #the first step is make shure we are dealing with the correct
+            #objects
             raise serializers.ValidationError(send)
         #The question object is storaged in self.context
         answers = models.Answer.objects.filter(question=data["question"])
@@ -105,7 +114,7 @@ class CreateAnswerSerializer(serializers.ModelSerializer):
                 else:
                     self.context['GoodAnswers'] = question.GoodAnswers - actual_GoodAnswers
                     self.context['BadAnswers'] = question.BadAnswers - actual_BadAnswers - 1
-                self.context['init'] = 'mmm'
+                self.context['init'] = 'XXXX'
                 return data
             if len(answers) == 0:
                 #Means there is not answer objects for the given question
@@ -133,10 +142,13 @@ class CreateAnswerSerializer(serializers.ModelSerializer):
         self.context['message'] = answer_message
         #set up the output
         return self.context['answer'], self.context['message']
-        #####IF U DON'T WRITE FCKN REEEETUUUURNNNNN THE OBJECT DON'T WILL BE SAVED
+        #####IF U DON'T WRITE  REEEETUUUURNNNNN THE OBJECT DON'T WILL BE SAVED
 
 
 class ShowAnswerSerializer(serializers.ModelSerializer):
+    """
+    Show all the information of answers
+    """
     class Meta:
         model = models.Answer
         fields = '__all__'

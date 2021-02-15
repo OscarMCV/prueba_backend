@@ -24,8 +24,8 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     """Create a lesson which contain the questions"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     #Id is a uudid field which is the primary key for every Lesson
     course = models.ForeignKey(Course, related_name='lessons', on_delete=models.CASCADE)
     name = models.CharField(max_length=120, unique=True)
@@ -39,12 +39,12 @@ class Lesson(models.Model):
 
     def __str__(self):
         """Return string representation for a Lesson"""
-        return '%d: %s' % (self.order, self.name)
+        return (self.name)
 
 
 class Question(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     """Create a question which contains the kind of question and the answers"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
     #The related name will be handle has a field in the model seralizer of the lesson
     order = models.IntegerField()
@@ -68,9 +68,10 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    """Create answers """
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
-    answer = models.CharField(max_length=70)
+    answer = models.CharField(max_length=70, primary_key=True)
     upload = models.DateField(auto_now=True)
     kind_answer = BooleanField()
 
