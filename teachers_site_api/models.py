@@ -31,7 +31,7 @@ class Lesson(models.Model):
     name = models.CharField(max_length=120, unique=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     order = models.IntegerField(null=False)
-    description = models.TextField(unique=True, blank=True, null=True)
+    the_lesson_is = models.TextField(unique=True, blank=True, null=True)
 
     class Meta:
         unique_together = ['course', 'order']
@@ -50,7 +50,7 @@ class Question(models.Model):
     order = models.IntegerField()
     GoodAnswers = models.IntegerField(null=False, blank=False)
     BadAnswers = models.IntegerField(null=False, blank=False)
-    #Could be "all answers are correct"
+    #Could be "all answers are correct", this are the unique with capital letters
     the_question_is = models.CharField(max_length=200)
     score = models.IntegerField(default=1)
     type_question = models.CharField(max_length=120, choices=KIND_OF_QUESTION, default='BOOLEAN')
@@ -63,16 +63,16 @@ class Question(models.Model):
 
     def __str__(self):
         """Return the question as string"""
-        return '%d: %s' % (self.order, self.the_question_is)
+        return (self.the_question_is)
         #Return in a python form the data. %d is for decimal and %s is for a string
 
 
 class Answer(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
-    answer = models.CharField(max_length=20)
+    answer = models.CharField(max_length=70)
     upload = models.DateField(auto_now=True)
-    kind_answer = BooleanField(default=False)
+    kind_answer = BooleanField()
 
     class Meta:
         ordering = ['upload']
@@ -80,4 +80,4 @@ class Answer(models.Model):
 
     def __str__(self):
         """Return the answer as string"""
-        return (self.kind_answer, self.answer)
+        return (self.answer)

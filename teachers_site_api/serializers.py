@@ -3,14 +3,6 @@ from rest_framework import serializers
 from teachers_site_api import models
 
 
-class HelloSerializer(serializers.Serializer):
-    """Create a serializer for a request in my HelloApiView"""
-    name = serializers.CharField(max_length=10)
-    """
-    the last serializer is used for test purposes
-    """
-
-
 class CreateCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Course
@@ -20,7 +12,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
 class CreateLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Lesson
-        fields = ['course', 'name', 'description', 'order', 'id']
+        fields = ['course', 'name', 'the_lesson_is', 'order', 'id']
 
 
 class CreateQuestionSerializer(serializers.ModelSerializer):
@@ -79,23 +71,72 @@ class CreateAnswerSerializer(serializers.ModelSerializer):
         fields = ['id', 'question', 'answer', 'kind_answer']
 
     def validate(self, data):
-        query = models.Question.objects.get(pk=self.context['question_id'])
+        question = models.Question.objects.get(pk=self.context['question_id'])
+        lol1 = data['question']
+        lol2 = question.the_question_is
+
+        if str(lol1) != str(lol2):
+            send = "This doesn't works=>{uno}context=>{dos}".format(
+                uno=lol1,
+                dos=lol2
+            )
+            raise serializers.ValidationError(send)
         #The question object is storaged in self.context
         answers = models.Answer.objects.filter(question=data["question"])
         #Retrieve all the objectis which match with the question UUID value
         #answers is a list which contains objects type models.Answer
         actual_GoodAnswers = 0
         actual_BadAnswers = 0
-        for answer_object in answers:
-            if answer_object.kind_answer is True:
-                actual_GoodAnswers = actual_GoodAnswers + 1
-            actual_BadAnswers = actual_BadAnswers + 1
-        if actual_GoodAnswers == query.GoodAnswers:
-            raise serializers.ValidationError('The amount of Good Answers has been reached')
-        if actual_BadAnswers == query.BadAnswers:
-            raise serializers.ValidationError('The amount of Bad Answers has been reached')
-        return data
+        try:
+            if len(answers) != 0:
+                #Meas there is one or more answer objects
+                for answer_object in answers:
+                    if answer_object.kind_answer is True:
+                        actual_GoodAnswers = actual_GoodAnswers + 1
+                    else:
+                        actual_BadAnswers = actual_BadAnswers + 1
+                if actual_GoodAnswers == question.GoodAnswers and data['kind_answer'] is True:
+                    raise serializers.ValidationError('The amount of Good Answers has been reached')
+                if actual_BadAnswers == question.BadAnswers and data['kind_answer'] is False:
+                    raise serializers.ValidationError('The amount of Bad Answers has been reached')
+                if data['kind_answer'] is True:
+                    self.context['GoodAnswers'] = question.GoodAnswers - actual_GoodAnswers - 1
+                    self.context['BadAnswers'] = question.BadAnswers - actual_BadAnswers
+                else:
+                    self.context['GoodAnswers'] = question.GoodAnswers - actual_GoodAnswers
+                    self.context['BadAnswers'] = question.BadAnswers - actual_BadAnswers - 1
+                self.context['init'] = 'mmm'
+                return data
+            if len(answers) == 0:
+                #Means there is not answer objects for the given question
+                if data['kind_answer'] is False:
+                    self.context['GoodAnswers'] = question.GoodAnswers
+                    self.context['BadAnswers'] = question.BadAnswers - 1
+                else:
+                    self.context['GoodAnswers'] = question.GoodAnswers - 1
+                    self.context['BadAnswers'] = question.BadAnswers
+                self.context['init'] = "this is the first answer "
+                return data
+        except models.Question.DoesNotExist:
+            raise serializers.ValidationError('no entró en ninguno')
 
     def create(self, validated_data):
-        return models.Answer.objects.create(**validated_data)
+        answer_message = "{init} left {GA} good answers and {BA} bad answers".format(
+            init=self.context['init'],
+            GA=self.context['GoodAnswers'],
+            BA=self.context['BadAnswers'],
+        )
+        answer = models.Answer.objects.create(**validated_data)
+        answer.save()
+        #Intance answer object and save it
+        self.context['answer'] = answer
+        self.context['message'] = answer_message
+        #set up the output
+        return self.context['answer'], self.context['message']
         #####IF U DON'T WRITE FCKN REEEETUUUURNNNNN THE OBJECT DON'T WILL BE SAVED
+
+
+class ShowAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Answer
+        fields = '__all__'
