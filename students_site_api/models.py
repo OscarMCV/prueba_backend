@@ -6,8 +6,7 @@ import uuid
 
 
 class StudentProgress(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    name = models.EmailField()
+    name = models.EmailField(primary_key=True)
 
     def __str__(self):
         return self.name
@@ -43,5 +42,14 @@ class CourseAchivments(models.Model):
 class LessonAchivments(models.Model):
     #will handle a register when a Lesson is finished
     student = models.ForeignKey(StudentProgress, related_name='lesson_achivments', on_delete=models.CASCADE)
-    lessons = models.ForeignKey(Related_Lesson, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Related_Lesson, on_delete=models.CASCADE)
     grade = models.FloatField()
+    status = models.BooleanField(default=False)
+
+
+class RelateAnswers(models.Model):
+    #Create answers to storage
+    student = models.ForeignKey(StudentProgress, related_name="answers", on_delete=models.CASCADE)
+    question = models.CharField(max_length=100)
+    question_grade = models.FloatField(max_length=100)
+    #this model object is deleted when a lesson y finishedrs", o

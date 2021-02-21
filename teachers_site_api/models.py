@@ -69,9 +69,9 @@ class Question(models.Model):
 
 class Answer(models.Model):
     """Create answers """
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
-    answer = models.CharField(max_length=70, primary_key=True)
+    answer = models.CharField(max_length=70)
     upload = models.DateField(auto_now=True)
     kind_answer = BooleanField()
 

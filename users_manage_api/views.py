@@ -6,8 +6,9 @@ from rest_framework.response import Response
 # Serializers
 from users_manage_api.serializers import UserLoginSerializer, UserProfileModelSerializer, CreateUserSerializer
 
-# Models
+# Internal apps imports
 from users_manage_api.models import UserProfile
+from students_site_api import models as student_models
 
 
 class CreateUser(APIView):
@@ -20,7 +21,11 @@ class CreateUser(APIView):
         serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-        else:
+            student_progres = student_models.StudentProgress.objects.create(
+                name=serializer.data['email'] 
+            )
+            #Create a pogress for the student
+            student_progres.save()
             return Response("Invalid Input")
         data = {
             'user': serializer.data,

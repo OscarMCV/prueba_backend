@@ -4,6 +4,7 @@ from django.db import models
 from rest_framework import serializers
 #Internal apps imports
 from teachers_site_api import models
+from students_site_api import models as student_models
 
 #https://www.django-rest-framework.org/api-guide/serializers/#baseserializer
 
@@ -11,19 +12,20 @@ from teachers_site_api import models
 class ShowAnswersForStudents(serializers.ModelSerializer):
     class Meta:
         model = models.Answer
-        fields = '__all__'
-        exclude = {'kind_answer'}
-
-
-class LessonSerializer(serializers.Serializer):
-    class Meta:
-        models = models.Lesson
-        fields = ['name']
+        exclude = ['kind_answer', 'upload']
 
 
 class ShowQuestionForStudentsSerializer(serializers.ModelSerializer):
-    answers = ShowAnswersForStudents
+    answers = ShowAnswersForStudents(many=True, read_only=True)
+    #The question model has answers, that answers are serialized
+    # exluding the kind_answer field and added to the serialized data
 
     class Meta:
         model = models.Question
-        fields = ['the_question_is', 'score', 'GoodAnswers', 'BadAnswers', 'answers']
+        fields = ['the_question_is', 'answers']
+
+
+class RelateAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = student_models.RelateAnswers
+        fields = '__all__'
