@@ -1,2 +1,5 @@
 rooot in ubuntu (from VIDANA32)
 /media/oscarmcv/VIDANA32/Proyects_python/
+
+activate virtualenv
+source /home/oscarmcv/Documents/main_python_virtualenv/bin/activate
