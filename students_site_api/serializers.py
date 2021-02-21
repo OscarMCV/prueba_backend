@@ -25,6 +25,12 @@ class ShowQuestionForStudentsSerializer(serializers.ModelSerializer):
         fields = ['the_question_is', 'answers']
 
 
+class LessonAchivmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = student_models.LessonAchivments
+        fields = '__all__'
+
+
 class RelateAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = student_models.RelateAnswers

@@ -1,3 +1,4 @@
+from django.db.models.fields import related
 from django.db.models.query import QuerySet
 from django.http import Http404
 #Core Django imports
@@ -94,6 +95,13 @@ class SolveQuestion(APIView):
         return Response(question_serialized.data)
 
     def post(self, request, question_id):
+        #The request body have to be similar to:
+        """
+        {
+        "answers": [1,0,0,0,0,0]
+
+        }
+        """
         try:
             question = models.Question.objects.get(pk=question_id)
             student_answers = request.data['answers']
@@ -101,7 +109,7 @@ class SolveQuestion(APIView):
             correct_answers_boolean_list = []
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         for answers in correct_answers_objects:
             if answers.kind_answer is True:
                 correct_answers_boolean_list.append(1)
@@ -154,8 +162,8 @@ class SolveLesson(APIView):
 
 class LessonDetail(APIView):
     """
-    Retrieve all the questions of a lesson and their possible
-    answers
+    Retrieve all the questions of a lesson and allows
+    send all the questions
     """
     permission_classes = [IsAuthenticated & IsStudent]
     serializer_class = student_serializers.ShowQuestionForStudentsSerializer
@@ -168,3 +176,40 @@ class LessonDetail(APIView):
             raise Http404
         return Response(serialized_questions.data)
 
+    def post(self, request, lesson_id):
+        #the request.body shoul seems like:
+        """
+            {
+            "send": "send"
+            }
+            """
+        student_progress = student_models.StudentProgress.objects.get(name=str(request.user))
+        #Retrieve the student progress
+        related_answers = student_models.RelateAnswers.objects.filter(student=student_progress)
+        lesson = models.Lesson.objects.get(pk=lesson_id)
+        questions = models.Question.objects.filter(lesson=lesson)
+        related_lesson = student_models.Related_Lesson.objects.get(pk=str(lesson_id))
+        avg = 0
+        max_avg = 0
+        _status = False
+        for question in questions:
+            max_avg = max_avg + question.score
+        for answers in related_answers:
+            avg = avg + answers.question_grade
+        avg = avg / len(related_answers)
+        avg = (avg * 100) / max_avg
+        if avg >= 50:
+            _status = True
+        #for answers in related_answers:
+        #answers.delete()
+
+        lesson_achivment = student_models.LessonAchivments.objects.create(
+            student=student_progress,
+            lesson=related_lesson,
+            grade=avg,
+            status=_status
+        )
+        serializer = student_serializers.LessonAchivmentSerializer(lesson_achivment)
+        
+        lesson_achivment.save()
+        return Response(serializer.data)
